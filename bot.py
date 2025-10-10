@@ -84,27 +84,12 @@ async def ping(ctx):
     msg = await ctx.send("calculando...")
     end = discord.utils.utcnow()
     duration = (end - start).total_seconds() * 1000
-    unidades = {
-        1 : 'con mi pito te vacuno',
-        2 : 'te la saco y te da tos',
-        3 : 'te la meto y no me ves',
-        4 : 'por tu culo mi aparato',
-        5 : 'por el culo te la hinco',
-        6 : '',
-        7 : 'en tu cuarto te la meten',
-        8 : '',
-        9 : '',
-        0 : '',
-        }
+    unidades = ['ms'] # A rellenar
     content = f'''
-    Tiempo de respuesta: \n{int(duration)} ||`{unidades[int(duration % 10)]}`|| \nms
+    Tiempo de respuesta: \n{int(duration)} ||`{random.choice(unidades)}`|| \nms
 
     '''
     await msg.edit(content = content)
-#@bot.event
-#async def on_command_error(ctx, error):
-#    await ctx.send("❌ Ocurrió un error al ejecutar el comando.")
-#    print(f"[ERROR clásico] {error}")
 
 @bot.command(aliases=['csplaying', 'csp'])
 async def changestatus(ctx, *, name="with myself"):
@@ -139,9 +124,6 @@ async def cogreload(ctx, extension):
     bot.unload_extension(f'cogs.{extension}')
     bot.load_extension(f'cogs.{extension}')
     await ctx.send(f'✅ Se ha recargado el módulo **{extension}.py**')
-
-
-
 
 for filename in os.listdir('./cogs'):
   if filename.endswith('.py'):
