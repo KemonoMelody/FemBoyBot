@@ -5,3 +5,4 @@ test/
 .ruff_cache/
 __pycache__/
 *.pyc
+./cogs/fonts/
