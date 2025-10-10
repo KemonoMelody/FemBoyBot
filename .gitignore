@@ -3,3 +3,5 @@ discord.log
 venv/
 test/
 .ruff_cache/
+__pycache__/
+*.pyc
