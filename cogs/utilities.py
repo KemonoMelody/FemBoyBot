@@ -26,6 +26,34 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
     async def on_ready(self):
         print('utilities.py was loaded.')
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.content.startswith("rpl"):
+            channel = self.bot.get_channel(message.channel.id)
+            msg = await channel.history(limit=50).flatten()
+            args0 = message.content.split('/')
+            query = args0[1]
+            repl = args0[2]
+            # msg0 = msg[0]
+            # print(msg)
+            if message.author.bot is True:
+                None
+            elif len(query) == 0:
+                await channel.send('No puedo reemplazar textos que no existen.')
+            else:
+                i = 0
+                for arg in msg:
+                    i += 1
+                    # if msg[i].content.startswith('f,'):
+                    #    continue
+                    if str(query) in msg[i].content:
+                        message = {
+                            "name" : msg[i].author.display_name,
+                            "content" : msg[i].content,
+                        }
+                        await channel.send(f'{message["name"]}: {message["content"].replace(query, repl)}')
+                        break
+
     @commands.command(aliases=['urbandictionary', 'urbandic', 'urban']) # creates a prefixed command
     async def _urban(self, ctx, *, args): # all methods now must have both self and ctx parameters
         async with ctx.typing():
