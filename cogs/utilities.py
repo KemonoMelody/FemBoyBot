@@ -4,8 +4,7 @@ import re
 
 def linkify_definition(text: str) -> str:
     """
-    Convierte [palabra] en enlaces clicables a Urban Dictionary,
-    manejando espacios, saltos de línea y caracteres especiales.
+    Urban Dic Hyperlinks
     """
     pattern = r'\[(.+?)\]'
 
