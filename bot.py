@@ -3,6 +3,7 @@ import asyncio
 import discord
 import logging
 import os
+import random
 from discord.ext import commands
 from dotenv import load_dotenv
 
