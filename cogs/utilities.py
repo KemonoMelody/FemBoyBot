@@ -145,7 +145,7 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
         if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
             await ctx.send('**⛔ Cooldown** `Intenta de nuevo en {:.2f} segundos.`'.format(error.retry_after))
         if isinstance(error, discord.ext.commands.errors.CommandInvokeError):
-            await ctx.send(f'**⛔ Se ha producido un error: `{str(error)}`.**\nℹ️ Si el error persiste, intenta reportarlo con **f.report**.')
+            await ctx.send(f'**⛔ Se ha producido un error: `{str(error)}`.**')
 
 def setup(bot): # this is called by Pycord to setup the cog
     bot.add_cog(Utilities(bot)) # add the cog to the bot
