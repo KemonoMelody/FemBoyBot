@@ -127,7 +127,8 @@ async def cogreload(ctx, extension):
     await ctx.send(f'✅ Se ha recargado el módulo **{extension}.py**')
 
 for filename in os.listdir('./cogs'):
-  if filename.endswith('.py'):
-    bot.load_extension(f'cogs.{filename[:-3]}')
+  if filename != '__init__.py':
+    if filename.endswith('.py'):
+      bot.load_extension(f'cogs.{filename[:-3]}')
 
 bot.run(TOKEN)
