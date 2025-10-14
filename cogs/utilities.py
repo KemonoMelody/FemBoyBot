@@ -59,6 +59,71 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
                         await channel.send(f'{message["name"]}: {message["content"].replace(query, repl)}')
                         break
 
+    @commands.command(name='rae') #WIP
+    async def rae(self, ctx, *, args):
+        async with ctx.typing():
+            apilink = f'https://rae-api.com/api/words/{urllib.parse.quote(args)}'
+            response = requests.get(apilink)
+            try:
+                data = response.json()['data']
+            except:
+                await ctx.send('**⛔ Palabra no encontrada:** O no existe, o hay alguna falta ortográfica.')
+                return
+            # origen = data['meanings'][0]['origin']
+            definiciones = data['meanings'][0]['senses']
+            embeds = []
+            for i in range(0, len(definiciones), 4):
+                definicion = definiciones[i:i+4]
+                #sinonimos = definicion[i]['synonyms']
+                #print(definicion)
+                embed = discord.Embed(
+                    title = data['word'],
+                    url = f'https://dle.rae.es/{urllib.parse.quote(args)}',
+                    colour = 0x002a5a
+                    )
+                embeds.append(embed)
+                entries = ''
+                for entry in definicion:
+                    print(entry['synonyms'])
+                    entries += f'\n{''.join(entry['raw'].split('Sin.:')[0])}'
+                    synonyms = '\n-# Sin.: '
+                    antonyms = '\n-# Ant.: '
+                    if entry['synonyms'] is None:
+                        synonyms = ''
+                    else:
+                        synonyms += ', '.join(entry['synonyms'])
+                    if entry['antonyms'] is None:
+                        antonyms = ''
+                    else:
+                        antonyms += ', '.join(entry['antonyms'])
+                    entries += synonyms
+                    entries += antonyms
+                embed.description = entries
+                    #embed.add_field(name=None, value = entry['raw'], inline=False)
+            # Crear view con botones
+            class Paginator(discord.ui.View):
+                def __init__(self):
+                    super().__init__(timeout=60)  # se desactiva después de 60s
+                    self.index = 0
+
+                @discord.ui.button(label="⬅️", style=discord.ButtonStyle.secondary)
+                async def previous(self, button: discord.ui.Button, interaction: discord.Interaction):
+                    if self.index > 0:
+                        self.index -= 1
+                        await interaction.response.edit_message(embed=embeds[self.index], view=self)
+
+
+                @discord.ui.button(label="➡️", style=discord.ButtonStyle.secondary)
+                async def next(self, button: discord.ui.Button, interaction: discord.Interaction):
+                    if self.index < len(embeds) - 1:
+                        self.index += 1
+                        await interaction.response.edit_message(embed=embeds[self.index], view=self)
+
+            # Mandar primer embed con botones
+            view = Paginator()
+
+            await ctx.send(embed=embeds[0], view=view)
+
     @commands.command(aliases=['urbandictionary', 'urbandic', 'urban']) # creates a prefixed command
     async def _urban(self, ctx, *, args): # all methods now must have both self and ctx parameters
         async with ctx.typing():
