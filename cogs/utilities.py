@@ -59,7 +59,7 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
                         await channel.send(f'{message["name"]}: {message["content"].replace(query, repl)}')
                         break
 
-    @commands.command(name='rae') #WIP
+    @commands.command(name='rae')
     async def rae(self, ctx, *, args):
         async with ctx.typing():
             apilink = f'https://rae-api.com/api/words/{urllib.parse.quote(args)}'
