@@ -59,7 +59,7 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
                         await channel.send(f'{message["name"]}: {message["content"].replace(query, repl)}')
                         break
 
-    @commands.command(name='rae')
+    @commands.command(name='rae') #WIP
     async def rae(self, ctx, *, args):
         async with ctx.typing():
             apilink = f'https://rae-api.com/api/words/{urllib.parse.quote(args)}'
@@ -84,7 +84,6 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
                 embeds.append(embed)
                 entries = ''
                 for entry in definicion:
-                    print(entry['synonyms'])
                     entries += f'\n{''.join(entry['raw'].split('Sin.:')[0])}'
                     synonyms = '\n-# Sin.: '
                     antonyms = '\n-# Ant.: '
@@ -98,8 +97,10 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
                         antonyms += ', '.join(entry['antonyms'])
                     entries += synonyms
                     entries += antonyms
-                embed.description = entries
-                    #embed.add_field(name=None, value = entry['raw'], inline=False)
+                embed.description = f'`{data['meanings'][0]['origin']['raw']}`'
+                embed.description += entries
+
+
             # Crear view con botones
             class Paginator(discord.ui.View):
                 def __init__(self):
