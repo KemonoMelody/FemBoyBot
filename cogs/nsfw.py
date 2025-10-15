@@ -159,10 +159,10 @@ class Nsfw(commands.Cog): # create a class for our cog that inherits from comman
             pages = []
             for i, post in enumerate(w, start=1):
                 imgfile = post['file_url']
-                tags = post['tags'][:1822]
+                tags = post['tags'][:1800]
                 tagfilter = [tag for tag in tags.split() if tag not in tagblacklist.split()]
                 taglist = ' '.join(tagfilter)
-                if len(post['tags']) >= 1822:
+                if len(post['tags']) >= 1800:
                     taglist = taglist + '...'
 
                 msg = f'''Tags:
