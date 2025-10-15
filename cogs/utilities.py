@@ -74,8 +74,6 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
             embeds = []
             for i in range(0, len(definiciones), 4):
                 definicion = definiciones[i:i+4]
-                #sinonimos = definicion[i]['synonyms']
-                #print(definicion)
                 embed = discord.Embed(
                     title = data['word'],
                     url = f'https://dle.rae.es/{urllib.parse.quote(args)}',
@@ -97,7 +95,10 @@ class Utilities(commands.Cog): # create a class for our cog that inherits from c
                         antonyms += ', '.join(entry['antonyms'])
                     entries += synonyms
                     entries += antonyms
-                embed.description = f'`{data['meanings'][0]['origin']['raw']}`'
+                try:
+                    embed.description = f'`{data['meanings'][0]['origin']['raw']}`'
+                except:
+                    embed.description = ''
                 embed.description += entries
 
 
