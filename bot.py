@@ -45,6 +45,13 @@ for filename in listdir("./cogs"):
             bot.load_extension(f"cogs.{filename[:-3]}")
 
 
+async def autorizar_comando_admin(ctx) -> bool:
+    if ctx.message.author.id == adminid:
+        return True
+    await ctx.send("**⛔ Sólo mi dueño puede usar ese comando.**")
+    return False
+
+
 @bot.remove_command('help')
 @bot.event
 async def on_ready():
@@ -63,38 +70,28 @@ async def ping(ctx):
 
 @bot.command(aliases=['csplaying', 'csp'])
 async def changestatus(ctx, *, name="with myself"):
-    if ctx.message.author.id == adminid:
+    if await autorizar_comando_admin(ctx):
         await bot.change_presence(activity=discord.Game(name))
         await ctx.send(f'✅ Estado del bot cambiado a "Jugando a **{name}**"')
-    else:
-        await ctx.send(
-            '**⛔ Sólo el dueño del bot puede ejecutar este comando.**'
-        )
 
 
 @bot.command(aliases=['load', 'enable', 'en'])
 async def cogload(ctx, extension):
-    if ctx.message.author.id != adminid:
-        await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
-    else:
+    if await autorizar_comando_admin(ctx):
         bot.load_extension(f'cogs.{extension}')
         await ctx.send(f'✅ Se ha activado el módulo **{extension}.py**')
 
 
 @bot.command(aliases=['unload', 'disable', 'dis'])
 async def cogunload(ctx, extension):
-    if ctx.message.author.id != adminid:
-        await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
-    else:
+    if await autorizar_comando_admin(ctx):
         bot.unload_extension(f'cogs.{extension}')
         await ctx.send(f'✅ Se ha desactivado el módulo **{extension}.py**')
 
 
 @bot.command(aliases=['reload', 're'])
 async def cogreload(ctx, extension):
-    if ctx.message.author.id != adminid:
-        await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
-    else:
+    if await autorizar_comando_admin(ctx):
         bot.unload_extension(f'cogs.{extension}')
         bot.load_extension(f'cogs.{extension}')
         await ctx.send(f'✅ Se ha recargado el módulo **{extension}.py**')
