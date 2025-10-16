@@ -39,6 +39,10 @@ bot = Bot(command_prefix=['F.', 'f.'], intents=intents)
 allowed_mentions = discord.AllowedMentions(
     users=False, everyone=False, roles=False
 )
+for filename in listdir("./cogs"):
+    if filename != "__init__.py":
+        if filename.endswith(".py"):
+            bot.load_extension(f"cogs.{filename[:-3]}")
 
 
 @bot.remove_command('help')
@@ -95,10 +99,5 @@ async def cogreload(ctx, extension):
         bot.load_extension(f'cogs.{extension}')
         await ctx.send(f'✅ Se ha recargado el módulo **{extension}.py**')
 
-
-for filename in listdir('./cogs'):
-    if filename != '__init__.py':
-        if filename.endswith('.py'):
-            bot.load_extension(f'cogs.{filename[:-3]}')
 
 bot.run(getenv("DISCORD-TOKEN"))
