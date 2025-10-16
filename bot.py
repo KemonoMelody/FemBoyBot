@@ -1,8 +1,8 @@
 import discord
 import logging
-from discord.ext import commands
 from os import getenv, listdir
 from discord.ext.commands import Bot
+from discord.gateway import DiscordWebSocket
 
 
 logger = logging.getLogger('discord') # Logeo de errores
@@ -11,54 +11,20 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-# === MODIFICACIÓN ===
 
-import sys
-from discord.gateway import DiscordWebSocket, _log
-from discord.ext.commands import Bot
-
-
-async def identify(self):
-    payload = {
-        'op': self.IDENTIFY,
-        'd': {
-            'token': self.token,
-            'properties': {
-                '$os': sys.platform,
-                '$browser': 'Discord Android',
-                '$device': 'Discord Android',
-                '$referrer': '',
-                '$referring_domain': ''
-            },
-            'compress': True,
-            'large_threshold': 250,
-            'v': 3
-        }
-    }
-
-    if self.shard_id is not None and self.shard_count is not None:
-        payload['d']['shard'] = [self.shard_id, self.shard_count]
-
-    state = self._connection
-    if state._activity is not None or state._status is not None:
-        payload['d']['presence'] = {
-            'status': state._status,
-            'game': state._activity,
-            'since': 0,
-            'afk': False
-        }
-
-    if state._intents is not None:
-        payload['d']['intents'] = state._intents.value
-
-    await self.call_hooks('before_identify', self.shard_id, initial=self._initial_identify)
-    await self.send_as_json(payload)
-    _log.info('Shard ID %s has sent the IDENTIFY payload.', self.shard_id)
+# Parchear indicador de estado movil en identify
+class MyDiscordWebSocket(DiscordWebSocket):
+    async def send_as_json(self, data):
+        if data.get("op") == self.IDENTIFY and "d" in data:
+            data["d"]["properties"].update({
+                "browser": "Discord Android",
+                "device": "Discord Android"
+            })
+        await super().send_as_json(data)
 
 
-DiscordWebSocket.identify = identify
+DiscordWebSocket.from_client = MyDiscordWebSocket.from_client
 
-# === MODIFICACIÓN ===
 
 intents = discord.Intents.default()
 intents.message_content = True
