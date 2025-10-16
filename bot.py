@@ -1,15 +1,9 @@
-import aiohttp
-import asyncio
 import discord
 import logging
-import os
-import random
 from discord.ext import commands
-from dotenv import load_dotenv
+from os import getenv, listdir
+from discord.ext.commands import Bot
 
-load_dotenv()  # Carga variables desde el archivo .env
-
-TOKEN = os.getenv("DISCORD-TOKEN")
 
 logger = logging.getLogger('discord') # Logeo de errores
 logger.setLevel(logging.DEBUG)
@@ -84,10 +78,9 @@ async def ping(ctx):
     start = discord.utils.utcnow()
     msg = await ctx.send("calculando...")
     end = discord.utils.utcnow()
-    duration = (end - start).total_seconds() * 1000
-    unidades = ['ms'] # A rellenar
-    content = f'''
-    Tiempo de respuesta: \n{int(duration)} ||`{random.choice(unidades)}`|| \nms
+    duration = round((end - start).total_seconds() * 1000)
+    content = f"✅ {duration}ms"
+    await msg.edit(content=content)
 
     '''
     await msg.edit(content = content)
@@ -126,9 +119,9 @@ async def cogreload(ctx, extension):
     bot.load_extension(f'cogs.{extension}')
     await ctx.send(f'✅ Se ha recargado el módulo **{extension}.py**')
 
-for filename in os.listdir('./cogs'):
-  if filename != '__init__.py':
-    if filename.endswith('.py'):
-      bot.load_extension(f'cogs.{filename[:-3]}')
+for filename in listdir('./cogs'):
+    if filename != '__init__.py':
+        if filename.endswith('.py'):
+            bot.load_extension(f'cogs.{filename[:-3]}')
 
-bot.run(TOKEN)
+bot.run(getenv("DISCORD-TOKEN"))
