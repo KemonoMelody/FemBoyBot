@@ -5,10 +5,15 @@ from discord.ext.commands import Bot
 from discord.gateway import DiscordWebSocket
 
 
-logger = logging.getLogger('discord') # Logeo de errores
+# Setup logger
+logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+handler = logging.FileHandler(
+    filename='discord.log', encoding='utf-8', mode='w'
+)
+handler.setFormatter(logging.Formatter(
+    '%(asctime)s:%(levelname)s:%(name)s: %(message)s'
+))
 logger.addHandler(handler)
 
 
@@ -31,7 +36,9 @@ adminid = int(getenv("PRIVILEGED-USERID"))
 intents = discord.Intents.default()
 intents.message_content = True
 bot = Bot(command_prefix=['F.', 'f.'], intents=intents)
-allowed_mentions = discord.AllowedMentions(users=False, everyone=False, roles=False)
+allowed_mentions = discord.AllowedMentions(
+    users=False, everyone=False, roles=False
+)
 
 
 @bot.remove_command('help')
