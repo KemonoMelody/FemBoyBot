@@ -26,18 +26,19 @@ class MyDiscordWebSocket(DiscordWebSocket):
 DiscordWebSocket.from_client = MyDiscordWebSocket.from_client
 
 
+# Bot variables
+adminid = int(getenv("PRIVILEGED-USERID"))
 intents = discord.Intents.default()
 intents.message_content = True
 bot = Bot(command_prefix=['F.', 'f.'], intents=intents)
 allowed_mentions = discord.AllowedMentions(users=False, everyone=False, roles=False)
 
-adminids = [995112245690388502]
 
 @bot.remove_command('help')
-
 @bot.event
 async def on_ready():
     print(f"Bot conectado como {bot.user}")
+
 
 @bot.command()
 async def ping(ctx):
@@ -48,42 +49,45 @@ async def ping(ctx):
     content = f"✅ {duration}ms"
     await msg.edit(content=content)
 
-    '''
-    await msg.edit(content = content)
 
 @bot.command(aliases=['csplaying', 'csp'])
 async def changestatus(ctx, *, name="with myself"):
-    if ctx.message.author.id in adminids:
+    if ctx.message.author.id == adminid:
         await bot.change_presence(activity=discord.Game(name))
         await ctx.send(f'✅ Estado del bot cambiado a "Jugando a **{name}**"')
     else:
-        await ctx.send('**⛔ Sólo el dueño del bot puede ejecutar este comando.**')
+        await ctx.send(
+            '**⛔ Sólo el dueño del bot puede ejecutar este comando.**'
+        )
 
 
 @bot.command(aliases=['load', 'enable', 'en'])
 async def cogload(ctx, extension):
-  if ctx.message.author.id not in adminids:
-    await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
-  else:
-    bot.load_extension(f'cogs.{extension}')
-    await ctx.send(f'✅ Se ha activado el módulo **{extension}.py**')
+    if ctx.message.author.id != adminid:
+        await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
+    else:
+        bot.load_extension(f'cogs.{extension}')
+        await ctx.send(f'✅ Se ha activado el módulo **{extension}.py**')
+
 
 @bot.command(aliases=['unload', 'disable', 'dis'])
 async def cogunload(ctx, extension):
-  if ctx.message.author.id not in adminids:
-    await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
-  else:
-    bot.unload_extension(f'cogs.{extension}')
-    await ctx.send(f'✅ Se ha desactivado el módulo **{extension}.py**')
+    if ctx.message.author.id != adminid:
+        await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
+    else:
+        bot.unload_extension(f'cogs.{extension}')
+        await ctx.send(f'✅ Se ha desactivado el módulo **{extension}.py**')
+
 
 @bot.command(aliases=['reload', 're'])
 async def cogreload(ctx, extension):
-  if ctx.message.author.id not in adminids:
-    await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
-  else:
-    bot.unload_extension(f'cogs.{extension}')
-    bot.load_extension(f'cogs.{extension}')
-    await ctx.send(f'✅ Se ha recargado el módulo **{extension}.py**')
+    if ctx.message.author.id != adminid:
+        await ctx.send('**⛔ Sólo mi dueño puede usar ese comando.')
+    else:
+        bot.unload_extension(f'cogs.{extension}')
+        bot.load_extension(f'cogs.{extension}')
+        await ctx.send(f'✅ Se ha recargado el módulo **{extension}.py**')
+
 
 for filename in listdir('./cogs'):
     if filename != '__init__.py':
